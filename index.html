@@ -23,38 +23,26 @@
 			</hgroup>
 
 			<form id="calcForm" @submit.prevent="handleFormData">
-				<fieldset class="grid">
+				<div class="grid">
 					<label>
 						Name
 						<input name="name" required />
 					</label>
-					<div>
+					<fieldset>
 						<label>
-							<input
-								name="parents"
-								type="checkbox"
-								role="switch"
-							/>
+							<input type="checkbox" name="parents" />
 							Parents present
 						</label>
 						<label>
-							<input
-								name="spouse"
-								type="checkbox"
-								role="switch"
-							/>
+							<input type="checkbox" name="spouse" />
 							Spouse present
 						</label>
 						<label>
-							<input
-								name="children"
-								type="checkbox"
-								role="switch"
-							/>
+							<input type="checkbox" name="children" />
 							Children present
 						</label>
-					</div>
-				</fieldset>
+					</fieldset>
+				</div>
 
 				<label for="mobileNumber">Mobile Number</label>
 				<fieldset role="group">
@@ -87,22 +75,16 @@
 					</header>
 					<ul>
 						<li>
-							<p>
-								Parents asset percentage:
-								<strong x-text="parentsPerc"></strong>%
-							</p>
+							Parents asset percentage:
+							<strong x-text="parentsPerc"></strong>%
 						</li>
 						<li>
-							<p>
-								Spouse asset percentage:
-								<strong x-text="spousePerc"></strong>%
-							</p>
+							Spouse asset percentage:
+							<strong x-text="spousePerc"></strong>%
 						</li>
 						<li>
-							<p>
-								Children asset percentage:
-								<strong x-text="childrenPerc"></strong>%
-							</p>
+							Children asset percentage:
+							<strong x-text="childrenPerc"></strong>%
 						</li>
 					</ul>
 				</article>
