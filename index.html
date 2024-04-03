@@ -69,7 +69,7 @@
 				<small id="mobileNumberHelper">
 					Kindly include your WhatsApp mobile number in order to get
 					our FREE illustrations of your Asset Distribution according
-					to the 1958 Malaysian Distribution Act
+					to the 1958 Malaysian Distribution Act.
 				</small>
 
 				<input type="submit" />
@@ -85,11 +85,26 @@
 						></button>
 						<h4>Here is your result!</h4>
 					</header>
-					<p>
-						This form has a name of
-						<strong x-text="name"></strong> and mobile number of
-						<strong x-text="mobileNumber"></strong>.
-					</p>
+					<ul>
+						<li>
+							<p>
+								Parents asset percentage:
+								<strong x-text="parentsPerc"></strong>%
+							</p>
+						</li>
+						<li>
+							<p>
+								Spouse asset percentage:
+								<strong x-text="spousePerc"></strong>%
+							</p>
+						</li>
+						<li>
+							<p>
+								Children asset percentage:
+								<strong x-text="childrenPerc"></strong>%
+							</p>
+						</li>
+					</ul>
 				</article>
 			</dialog>
 		</main>
@@ -101,16 +116,37 @@
 		document.addEventListener("alpine:init", () => {
 			Alpine.data("calculator", () => ({
 				open: false,
-				name: "",
-				mobileNumber: "",
+				parentsPerc: 0,
+				spousePerc: 0,
+				childrenPerc: 0,
 
 				handleFormData() {
 					const { name, parents, spouse, children, mobileNumber } =
 						Object.fromEntries(new FormData(calcForm));
 
 					if (name && mobileNumber) {
-						this.name = name;
-						this.mobileNumber = mobileNumber;
+						if (parents) {
+							this.parentsPerc = !spouse && !children ? 100 : 50;
+
+							if (spouse) {
+								this.spousePerc = children ? 25 : 50;
+								this.childrenPerc = children ? 25 : 0;
+							} else {
+								this.spousePerc = 0;
+								this.childrenPerc = children ? 50 : 0;
+							}
+						} else {
+							this.parentsPerc = 0;
+
+							if (spouse) {
+								this.spousePerc = children ? 50 : 100;
+								this.childrenPerc = children ? 50 : 0;
+							} else {
+								this.spousePerc = 0;
+								this.childrenPerc = children ? 100 : 0;
+							}
+						}
+
 						this.open = !this.open;
 					}
 				},
