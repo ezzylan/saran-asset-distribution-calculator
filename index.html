@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="light dark" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css"
+		/>
+		<title>Asset Distribution Calculator</title>
+		<script
+			defer
+			src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+		></script>
+	</head>
+
+	<body>
+		<main class="container" x-data="calculator">
+			<hgroup>
+				<h2>Asset Distribution Calculator</h2>
+				<p>Please fill in the following details.</p>
+			</hgroup>
+
+			<form id="calcForm" @submit.prevent="handleFormData">
+				<fieldset class="grid">
+					<label>
+						Name
+						<input name="name" required />
+					</label>
+					<div>
+						<label>
+							<input
+								name="parents"
+								type="checkbox"
+								role="switch"
+							/>
+							Parents present
+						</label>
+						<label>
+							<input
+								name="spouse"
+								type="checkbox"
+								role="switch"
+							/>
+							Spouse present
+						</label>
+						<label>
+							<input
+								name="children"
+								type="checkbox"
+								role="switch"
+							/>
+							Children present
+						</label>
+					</div>
+				</fieldset>
+
+				<label for="mobileNumber">Mobile Number</label>
+				<fieldset role="group">
+					<button class="secondary" disabled>+60</button>
+					<input
+						type="tel"
+						name="mobileNumber"
+						aria-describedby="mobileNumberHelper"
+						required
+					/>
+				</fieldset>
+				<small id="mobileNumberHelper">
+					Kindly include your WhatsApp mobile number in order to get
+					our FREE illustrations of your Asset Distribution according
+					to the 1958 Malaysian Distribution Act
+				</small>
+
+				<input type="submit" />
+			</form>
+
+			<dialog :open="open">
+				<article>
+					<header>
+						<button
+							aria-label="Close"
+							rel="prev"
+							@click="open = ! open"
+						></button>
+						<h4>Here is your result!</h4>
+					</header>
+					<p>
+						This form has a name of
+						<strong x-text="name"></strong> and mobile number of
+						<strong x-text="mobileNumber"></strong>.
+					</p>
+				</article>
+			</dialog>
+		</main>
+	</body>
+
+	<script>
+		const calcForm = document.getElementById("calcForm");
+
+		document.addEventListener("alpine:init", () => {
+			Alpine.data("calculator", () => ({
+				open: false,
+				name: "",
+				mobileNumber: "",
+
+				handleFormData() {
+					const { name, parents, spouse, children, mobileNumber } =
+						Object.fromEntries(new FormData(calcForm));
+
+					if (name && mobileNumber) {
+						this.name = name;
+						this.mobileNumber = mobileNumber;
+						this.open = !this.open;
+					}
+				},
+			}));
+		});
+	</script>
+</html>
