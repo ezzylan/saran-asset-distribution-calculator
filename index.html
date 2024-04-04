@@ -55,9 +55,9 @@
 					/>
 				</fieldset>
 				<small id="mobileNumberHelper">
-					Kindly include your WhatsApp mobile number in order to get
-					our FREE illustrations of your Asset Distribution according
-					to the 1958 Malaysian Distribution Act.
+					Provide your WhatsApp number to receive free illustrations
+					of your Asset Distribution under the 1958 Malaysian
+					Distribution Act.
 				</small>
 
 				<input type="submit" />
@@ -69,70 +69,100 @@
 						<button
 							aria-label="Close"
 							rel="prev"
-							@click="open = ! open"
+							@click="closeResults"
 						></button>
 						<h4>Here is your result!</h4>
 					</header>
-					<ul>
-						<li>
-							Parents asset percentage:
-							<strong x-text="parentsPerc"></strong>%
-						</li>
-						<li>
-							Spouse asset percentage:
-							<strong x-text="spousePerc"></strong>%
-						</li>
-						<li>
-							Children asset percentage:
-							<strong x-text="childrenPerc"></strong>%
-						</li>
-					</ul>
+					<canvas id="resultsChart"></canvas>
 				</article>
 			</dialog>
 		</main>
-	</body>
 
-	<script>
-		const calcForm = document.getElementById("calcForm");
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-		document.addEventListener("alpine:init", () => {
-			Alpine.data("calculator", () => ({
-				open: false,
-				parentsPerc: 0,
-				spousePerc: 0,
-				childrenPerc: 0,
+		<script>
+			const calcForm = document.getElementById("calcForm");
 
-				handleFormData() {
-					const { name, parents, spouse, children, mobileNumber } =
-						Object.fromEntries(new FormData(calcForm));
+			const resultsChart = new Chart(
+				document.getElementById("resultsChart"),
+				{
+					type: "pie",
+					data: {
+						labels: ["Parents", "Spouse", "Children"],
+						datasets: [
+							{
+								label: "Distribution Percentage",
+								backgroundColor: [
+									"rgb(255, 99, 132)",
+									"rgb(54, 162, 235)",
+									"rgb(255, 205, 86)",
+								],
+								hoverOffset: 4,
+							},
+						],
+					},
+					options: { animation: false },
+				}
+			);
 
-					if (name && mobileNumber) {
-						if (parents) {
-							this.parentsPerc = !spouse && !children ? 100 : 50;
+			document.addEventListener("alpine:init", () => {
+				Alpine.data("calculator", () => ({
+					open: false,
+					parentsPerc: 0,
+					spousePerc: 0,
+					childrenPerc: 0,
 
-							if (spouse) {
-								this.spousePerc = children ? 25 : 50;
-								this.childrenPerc = children ? 25 : 0;
+					handleFormData() {
+						const {
+							name,
+							parents,
+							spouse,
+							children,
+							mobileNumber,
+						} = Object.fromEntries(new FormData(calcForm));
+
+						if (name && mobileNumber) {
+							if (parents) {
+								this.parentsPerc =
+									!spouse && !children ? 100 : 50;
+
+								if (spouse) {
+									this.spousePerc = children ? 25 : 50;
+									this.childrenPerc = children ? 25 : 0;
+								} else {
+									this.spousePerc = 0;
+									this.childrenPerc = children ? 50 : 0;
+								}
 							} else {
-								this.spousePerc = 0;
-								this.childrenPerc = children ? 50 : 0;
-							}
-						} else {
-							this.parentsPerc = 0;
+								this.parentsPerc = 0;
 
-							if (spouse) {
-								this.spousePerc = children ? 50 : 100;
-								this.childrenPerc = children ? 50 : 0;
-							} else {
-								this.spousePerc = 0;
-								this.childrenPerc = children ? 100 : 0;
+								if (spouse) {
+									this.spousePerc = children ? 50 : 100;
+									this.childrenPerc = children ? 50 : 0;
+								} else {
+									this.spousePerc = 0;
+									this.childrenPerc = children ? 100 : 0;
+								}
 							}
+
+							resultsChart.data.datasets[0].data = [
+								this.parentsPerc,
+								this.spousePerc,
+								this.childrenPerc,
+							];
+							resultsChart.update();
+
+							this.open = !this.open;
 						}
+					},
 
+					closeResults() {
 						this.open = !this.open;
-					}
-				},
-			}));
-		});
-	</script>
+						resultsChart.data.datasets[0].data = [];
+						resultsChart.update();
+					},
+				}));
+			});
+		</script>
+	</body>
 </html>
