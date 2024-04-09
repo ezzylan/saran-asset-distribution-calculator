@@ -28,18 +28,25 @@
 						Name
 						<input name="name" required />
 					</label>
+					<label>
+						Email
+						<input type="email" name="email" required />
+					</label>
 					<fieldset>
 						<label>
 							<input type="checkbox" name="parents" />
 							Parents present
+							<i data-lucide="users"></i>
 						</label>
 						<label>
 							<input type="checkbox" name="spouse" />
 							Spouse present
+							<i data-lucide="hand-heart"></i>
 						</label>
 						<label>
 							<input type="checkbox" name="children" />
 							Children present
+							<i data-lucide="baby"></i>
 						</label>
 					</fieldset>
 				</div>
@@ -78,8 +85,12 @@
 			</dialog>
 		</main>
 
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://unpkg.com/lucide@latest"></script>
+		<script>
+			lucide.createIcons();
+		</script>
 
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
 			const calcForm = document.getElementById("calcForm");
 
@@ -115,13 +126,14 @@
 					handleFormData() {
 						const {
 							name,
+							email,
+							mobileNumber,
 							parents,
 							spouse,
 							children,
-							mobileNumber,
 						} = Object.fromEntries(new FormData(calcForm));
 
-						if (name && mobileNumber) {
+						if (name && email && mobileNumber) {
 							if (parents) {
 								this.parentsPerc =
 									!spouse && !children ? 100 : 50;
